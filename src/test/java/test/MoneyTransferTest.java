@@ -22,17 +22,16 @@ public class MoneyTransferTest {
         var dashboardPage = verificationPage.validVerify(verificationCode); // ввести корректныйь проверочный код
         var idCardFirst = DataHelper.getFirstInfoCard().getCardId();  // получить id первой карты
         var idCardSecond = DataHelper.getSecondInfoCard().getCardId(); // получить id второй карты
-        var BalanceFirstCard = dashboardPage.getCardBalance(idCardFirst); // баланс первой карты
-        var BalanceSecondCard = dashboardPage.getCardBalance(idCardSecond); // баланс второй карты
+        var balanceFirstCard = dashboardPage.getCardBalance(idCardFirst); // баланс первой карты
+        var balanceSecondCard = dashboardPage.getCardBalance(idCardSecond); // баланс второй карты
         var transferPage = dashboardPage.selectCardToTransfer(idCardFirst); // выбор первой карты для пополнения, нажатие кнопки "Пополнить"
-        int addAmount = DataHelper.generateBalance(BalanceSecondCard); // случайная сумма пополнения с баланса второй карты
+        int addAmount = DataHelper.generateBalance(balanceSecondCard); // случайная сумма пополнения с баланса второй карты
         transferPage.validTransfer(String.valueOf(addAmount), DataHelper.getSecondInfoCard()); // операция перевода
 
-        var expectedBalanceFirstCard = BalanceFirstCard + addAmount; // баланс первой карты после пополнения
-        var expectedBalanceSecondCard = BalanceSecondCard - addAmount; // баланс второй карты после пополнения
+        var expectedBalanceFirstCard = balanceFirstCard + addAmount; // баланс первой карты после пополнения
+        var expectedBalanceSecondCard = balanceSecondCard - addAmount; // баланс второй карты после пополнения
         Assertions.assertEquals(expectedBalanceFirstCard, dashboardPage.getCardBalance(idCardFirst));
         Assertions.assertEquals(expectedBalanceSecondCard, dashboardPage.getCardBalance(idCardSecond));
-        $("[data-test-id=dashboard]").shouldBe(visible); // проверка возврата на страницу со списком карт
     }
 
     @Test
@@ -45,17 +44,16 @@ public class MoneyTransferTest {
         var dashboardPage = verificationPage.validVerify(verificationCode); // ввести корректныйь проверочный код
         var idCardFirst = DataHelper.getFirstInfoCard().getCardId();  // получить id первой карты
         var idCardSecond = DataHelper.getSecondInfoCard().getCardId(); // получить id второй карты
-        var BalanceFirstCard = dashboardPage.getCardBalance(idCardFirst); // баланс первой карты
-        var BalanceSecondCard = dashboardPage.getCardBalance(idCardSecond); // баланс второй карты
+        var balanceFirstCard = dashboardPage.getCardBalance(idCardFirst); // баланс первой карты
+        var balanceSecondCard = dashboardPage.getCardBalance(idCardSecond); // баланс второй карты
         var transferPage = dashboardPage.selectCardToTransfer(idCardSecond); // выбор первой карты для пополнения, нажатие кнопки "Пополнить"
-        int addAmount = DataHelper.generateBalance(BalanceFirstCard); // случайная сумма пополнения с баланса первой карты
+        int addAmount = DataHelper.generateBalance(balanceFirstCard); // случайная сумма пополнения с баланса первой карты
         transferPage.validTransfer(String.valueOf(addAmount), DataHelper.getFirstInfoCard()); // операция перевода
 
-        var expectedBalanceFirstCard = BalanceFirstCard - addAmount; // баланс первой карты после пополнения
-        var expectedBalanceSecondCard = BalanceSecondCard + addAmount; // баланс второй карты после пополнения
+        var expectedBalanceFirstCard = balanceFirstCard - addAmount; // баланс первой карты после пополнения
+        var expectedBalanceSecondCard = balanceSecondCard + addAmount; // баланс второй карты после пополнения
         Assertions.assertEquals(expectedBalanceFirstCard, dashboardPage.getCardBalance(idCardFirst));
         Assertions.assertEquals(expectedBalanceSecondCard, dashboardPage.getCardBalance(idCardSecond));
-        $("[data-test-id=dashboard]").shouldBe(visible); // проверка возврата на страницу со списком карт
     }
 
     @Test
@@ -87,13 +85,7 @@ public class MoneyTransferTest {
         var verificationCode = DataHelper.getVerificationCodeFor(authInfo); // получить корректный проверочный код
         var dashboardPage = verificationPage.validVerify(verificationCode); // ввести корректныйь проверочный код
         var idCardFirst = DataHelper.getFirstInfoCard().getCardId();  // получить id первой карты
-        var idCardSecond = DataHelper.getSecondInfoCard().getCardId(); // получить id второй карты
-        var BalanceFirstCard = dashboardPage.getCardBalance(idCardFirst); // баланс первой карты
-        var BalanceSecondCard = dashboardPage.getCardBalance(idCardSecond); // баланс второй карты
         var transferPage = dashboardPage.selectCardToTransfer(idCardFirst); // выбор первой карты для пополнения, нажатие кнопки "Пополнить"
-        transferPage.validTransfer("", DataHelper.getZeroInfoCard()); // операция перевода с пустыми полями
-
-        $("[data-test-id=error-notification]>.notification__title").shouldHave(text("Ошибка"));
-        $("[data-test-id=error-notification]>.notification__content").shouldHave(text("Ошибка! Произошла ошибка"));
+        transferPage.inValidTransfer("", DataHelper.getZeroInfoCard()); // операция перевода с пустыми полями
     }
 }
