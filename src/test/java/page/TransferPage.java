@@ -22,6 +22,5 @@ public class TransferPage {
         summField.setValue(amountTransfer); // ввод суммы пополнения
         fromField.setValue(infoCard.getCardNumber()); // ввод номера карты, с которой происходит пополнение
         addSummButton.click(); // нажатие кнопки "Пополнить"
-       // return new DashBoardPage();
     }
 }

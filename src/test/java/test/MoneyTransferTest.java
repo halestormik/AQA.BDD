@@ -4,6 +4,8 @@ import data.DataHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import page.LoginPageV1;
+
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
@@ -24,7 +26,7 @@ public class MoneyTransferTest {
         var BalanceSecondCard = dashboardPage.getCardBalance(idCardSecond); // баланс второй карты
         var transferPage = dashboardPage.selectCardToTransfer(idCardFirst); // выбор первой карты для пополнения, нажатие кнопки "Пополнить"
         int addAmount = DataHelper.generateBalance(BalanceSecondCard); // случайная сумма пополнения с баланса второй карты
-        transferPage.validTransfer(String.valueOf(addAmount), DataHelper.getSecondInfoCard()); // операция перевода/**/
+        transferPage.validTransfer(String.valueOf(addAmount), DataHelper.getSecondInfoCard()); // операция перевода
 
         var expectedBalanceFirstCard = BalanceFirstCard + addAmount; // баланс первой карты после пополнения
         var expectedBalanceSecondCard = BalanceSecondCard - addAmount; // баланс второй карты после пополнения
@@ -74,5 +76,24 @@ public class MoneyTransferTest {
         var verificationPage = loginPage.validLogin(authInfo); // ввести некорректные данные для авторизации
         var verificationCode = DataHelper.getWrongVerificationCodeFor(authInfo); // получить некорректный проверочный код
         verificationPage.invalidVerify(verificationCode); // ввести некорректный код
+    }
+
+    @Test
+    void shouldTestTransferPageWithEmptyFields() { // страница перевода с пустыми полями
+        open("http://localhost:9999");
+        var loginPage = new LoginPageV1();
+        var authInfo = DataHelper.getAuthInfo(); // получить корректные данные для авторизации
+        var verificationPage = loginPage.validLogin(authInfo); // ввести корректные данные для авторизации
+        var verificationCode = DataHelper.getVerificationCodeFor(authInfo); // получить корректный проверочный код
+        var dashboardPage = verificationPage.validVerify(verificationCode); // ввести корректныйь проверочный код
+        var idCardFirst = DataHelper.getFirstInfoCard().getCardId();  // получить id первой карты
+        var idCardSecond = DataHelper.getSecondInfoCard().getCardId(); // получить id второй карты
+        var BalanceFirstCard = dashboardPage.getCardBalance(idCardFirst); // баланс первой карты
+        var BalanceSecondCard = dashboardPage.getCardBalance(idCardSecond); // баланс второй карты
+        var transferPage = dashboardPage.selectCardToTransfer(idCardFirst); // выбор первой карты для пополнения, нажатие кнопки "Пополнить"
+        transferPage.validTransfer("", DataHelper.getZeroInfoCard()); // операция перевода с пустыми полями
+
+        $("[data-test-id=error-notification]>.notification__title").shouldHave(text("Ошибка"));
+        $("[data-test-id=error-notification]>.notification__content").shouldHave(text("Ошибка! Произошла ошибка"));
     }
 }

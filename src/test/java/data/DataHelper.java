@@ -36,6 +36,11 @@ public class DataHelper {
                 "0f3f5c2a-249e-4c3d-8287-09f7a039391d");
     }
 
+    public static InfoCard getZeroInfoCard() {
+        return new InfoCard("",
+                "");
+    }
+
     public static int generateBalance(int balance) {
         return new Random().nextInt(balance) + 1;
     }
