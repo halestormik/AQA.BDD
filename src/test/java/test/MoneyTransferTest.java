@@ -1,16 +1,31 @@
 package test;
 
+import com.codeborne.selenide.Configuration;
 import data.DataHelper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.chrome.ChromeOptions;
 import page.LoginPageV1;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
 public class MoneyTransferTest {
+
+    @BeforeEach
+    public void setup() { // исправление высплывающих окон после обновления Google Chrome
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
+        Map<String, Object> prefs = new HashMap<String, Object>();
+        prefs.put("credentials_enable_service", false);
+        prefs.put("password_manager_enabled", false);
+        options.setExperimentalOption("prefs", prefs);
+        Configuration.browserCapabilities = options;
+    }
 
     @Test
     void shouldTestSuccessfulMoneyTransferFromSecondToFirst() { // успешное пополнение первой карты с баланса второй карты
@@ -86,6 +101,7 @@ public class MoneyTransferTest {
         var dashboardPage = verificationPage.validVerify(verificationCode); // ввести корректныйь проверочный код
         var idCardFirst = DataHelper.getFirstInfoCard().getCardId();  // получить id первой карты
         var transferPage = dashboardPage.selectCardToTransfer(idCardFirst); // выбор первой карты для пополнения, нажатие кнопки "Пополнить"
-        transferPage.inValidTransfer("", DataHelper.getZeroInfoCard()); // операция перевода с пустыми полями
+        transferPage.moneyTransfer("", DataHelper.getZeroInfoCard()); // операция перевода с пустыми полями
+        transferPage.errorMessage("Ошибка! Произошла ошибка");
     }
 }

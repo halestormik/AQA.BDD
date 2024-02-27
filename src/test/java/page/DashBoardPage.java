@@ -1,10 +1,8 @@
 package page;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.DragAndDropOptions;
+
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import data.DataHelper;
 import lombok.val;
 
 import static com.codeborne.selenide.Condition.*;
@@ -35,6 +33,7 @@ public class DashBoardPage {
     }
 
     public DashBoardPage() {
+
         header.shouldBe(visible);
     }
 }
